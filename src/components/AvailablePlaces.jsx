@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { fetchAvailablePlaces } from "../http.js";
 import { sortPlacesByDistance } from "../loc.js";
 import Places from "./Places.jsx";
 export default function AvailablePlaces({ onSelectPlace }) {
@@ -9,15 +10,10 @@ export default function AvailablePlaces({ onSelectPlace }) {
     async function fetchPlaces() {
       setIsFetching(true);
       try {
-        var response = await fetch("http://localhost:3000/places");
-        if (!response.ok) {
-          const error = new Error("Failed to fetch places data");
-          throw error;
-        }
-        var resData = await response.json();
+        var places = await fetchAvailablePlaces();
         navigator.geolocation.getCurrentPosition((position) => {
           const sortedPlaces = sortPlacesByDistance(
-            resData.places,
+            places,
             position.coords.latitude,
             position.coords.longitude
           );
